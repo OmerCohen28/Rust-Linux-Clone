@@ -69,14 +69,17 @@ pub mod linux{
     // create file with same name at new path
     //copy the file over with fs::copy()
     pub fn mv(name:&str,old_p:&PathBuf,new_p:&mut PathBuf)->Result<(), std::io::Error>{
-        new_p.push(Path::new(name));
+        println!("{:?}",new_p);
         let file = File::create(&new_p);
         if !new_p.is_file(){
             return Err(std::io::Error::new(std::io::ErrorKind::Other,"Tried to move a non file entity"));
         }
         let mut old_new_p = PathBuf::new();
         old_new_p.push(old_p);
-        fs::copy(old_new_p, new_p)?;
+        old_new_p.push(Path::new(name));
+        println!("{:?},{:?}",old_new_p,new_p);
+        fs::copy(&old_new_p, &new_p)?;
+        fs::remove_file(&old_new_p)?;
         Ok(())
     }
 
